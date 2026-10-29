@@ -105,7 +105,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 *Applications subscribed to the Default Plan of the product.*
 
 ### Consumer Catalog
-<img src="docs/screenshots/06-consumer-catalog.png" alt="Consumer Catalog product page" width="800">
+<img src="docs/screenshots/Analytics/Consumer Catalog.png" alt="Consumer Catalog product page" width="800">
 
 *The developer's view of the product.*
 
