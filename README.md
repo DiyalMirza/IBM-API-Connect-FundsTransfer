@@ -112,7 +112,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 *The developer's view of the product.*
 
 ### Security tests (Postman)
-<img src="docs/screenshots/07-postman-wrong-secret-401.png" alt="Wrong secret returns 401" width="800">
+<img src="docs/screenshots/Unauthorized.png" alt="Wrong secret returns 401" width="800">
 
 *A wrong secret is rejected with 401.*
 
