@@ -1,0 +1,12 @@
+.env
+node_modules/
+logs/
+*.log
+.DS_Store
+ace/.metadata/
+ace/GeneratedBarFiles/
+backend-node/Client Secret.txt
+backend-node/curl.exe
+backend-node/$1
+backend-node/type
+backend-node/{

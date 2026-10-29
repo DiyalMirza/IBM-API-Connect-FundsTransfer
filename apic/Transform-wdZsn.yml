@@ -1,0 +1,11 @@
+kind: Transform
+apiVersion: api.ibm.com/v1
+metadata:
+  name: Transform-wdZsn
+  namespace: Funds-Transfer
+  version: '1.0'
+  tags: []
+  labels:
+    gatewayTypes:
+      - nano
+spec: {}

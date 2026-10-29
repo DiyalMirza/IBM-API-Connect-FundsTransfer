@@ -1,0 +1,16 @@
+kind: RateLimitDef
+apiVersion: api.ibm.com/v1
+metadata:
+  name: transfer-limit
+  namespace: Funds-Transfer
+  version: 1.0.0
+  tags: []
+spec:
+  max: 5
+  consumerSpecific: true
+  intervalLen: 1
+  intervalUnit: minute
+  extensions:
+    dp-nano-gateway:
+      spec:
+        exceedAction: return429

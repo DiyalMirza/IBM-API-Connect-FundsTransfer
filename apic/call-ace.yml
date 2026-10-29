@@ -1,0 +1,18 @@
+kind: FreeFlowPolicySequence
+apiVersion: api.ibm.com/v1
+metadata:
+  name: call-ace
+  namespace: Funds-Transfer
+  version: '1.0'
+  tags: []
+  labels:
+    gatewayTypes:
+      - nano
+spec:
+  main:
+    - $ref: Funds-Transfer:ExtractIdentity-WMbCI:1.0
+    - $ref: Funds-Transfer:Authenticate-ERfSV:1.0
+    - $ref: Funds-Transfer:RateLimit-E1fj4:1.0
+    - $ref: Funds-Transfer:invoke-call-ace:1.0
+  monitoring:
+    $ref: Funds-Transfer:telemetry-call-ace:1.0

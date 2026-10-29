@@ -1,0 +1,23 @@
+kind: Invoke
+apiVersion: api.ibm.com/v1
+metadata:
+  name: invoke-call-ace
+  namespace: Funds-Transfer
+  version: '1.0'
+  tags: []
+  labels:
+    gatewayTypes:
+      - nano
+spec:
+  endpoint:
+    http:
+      target:
+        persistentConnections: false
+        timeout: 60
+        url: https://placate-molehill-headstone.ngrok-free.dev/funds-transfer
+        decompressResponse: false
+        followRedirects: false
+        chunkedUpload: false
+        urlType: plain
+        tlsClientProfile: tls-client-profile-catalog-default:1.0.0
+      verb: POST

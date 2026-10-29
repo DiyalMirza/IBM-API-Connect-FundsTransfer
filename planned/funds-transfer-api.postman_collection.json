@@ -1,0 +1,320 @@
+{
+  "info": {
+    "name": "Funds Transfer API tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "gatewayUrl",
+      "value": "https://YOUR-GATEWAY-HOST/1.0.0/funds-transfer-api"
+    },
+    {
+      "key": "clientId",
+      "value": "PASTE-YOUR-CLIENT-ID"
+    },
+    {
+      "key": "retryId",
+      "value": ""
+    },
+    {
+      "key": "clientSecret",
+      "value": "PASTE-YOUR-CLIENT-SECRET"
+    }
+  ],
+  "item": [
+    {
+      "name": "1 Success (moves 10)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('status field is SUCCESS', () => pm.expect(pm.response.json().status).to.eql('SUCCESS'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-IBM-Client-Id",
+            "value": "{{clientId}}"
+          },
+          {
+            "key": "X-IBM-Client-Secret",
+            "value": "{{clientSecret}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccount\": \"ACC1001\",\n  \"destinationAccount\": \"ACC1002\",\n  \"amount\": 10,\n  \"transferId\": \"{{$guid}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{gatewayUrl}}/transfer"
+      }
+    },
+    {
+      "name": "2 Rejected debit (no money moves)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status field is DEBIT_FAILED', () => pm.expect(pm.response.json().status).to.eql('DEBIT_FAILED'));",
+              "// HTTP code may be 200 or 409 depending on the gateway; check it on Day 4",
+              "pm.test('HTTP is 200 or 409', () => pm.expect([200, 409]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-IBM-Client-Id",
+            "value": "{{clientId}}"
+          },
+          {
+            "key": "X-IBM-Client-Secret",
+            "value": "{{clientSecret}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccount\": \"ACC1001\",\n  \"destinationAccount\": \"ACC1002\",\n  \"amount\": 99999999\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{gatewayUrl}}/transfer"
+      }
+    },
+    {
+      "name": "3 Refund path (unknown destination)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status field is FAILED_REFUNDED', () => pm.expect(pm.response.json().status).to.eql('FAILED_REFUNDED'));",
+              "pm.test('HTTP is 200 or 502', () => pm.expect([200, 502]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-IBM-Client-Id",
+            "value": "{{clientId}}"
+          },
+          {
+            "key": "X-IBM-Client-Secret",
+            "value": "{{clientSecret}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccount\": \"ACC1001\",\n  \"destinationAccount\": \"ACC9999\",\n  \"amount\": 10,\n  \"transferId\": \"{{$guid}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{gatewayUrl}}/transfer"
+      }
+    },
+    {
+      "name": "4a Retry: first call (moves 10)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.collectionVariables.set('retryId', pm.variables.replaceIn('{{$guid}}'));"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', () => pm.response.to.have.status(200));",
+              "pm.test('status field is SUCCESS', () => pm.expect(pm.response.json().status).to.eql('SUCCESS'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-IBM-Client-Id",
+            "value": "{{clientId}}"
+          },
+          {
+            "key": "X-IBM-Client-Secret",
+            "value": "{{clientSecret}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccount\": \"ACC1001\",\n  \"destinationAccount\": \"ACC1002\",\n  \"amount\": 10,\n  \"transferId\": \"{{retryId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{gatewayUrl}}/transfer"
+      }
+    },
+    {
+      "name": "4b Retry: same transferId (must move nothing)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('replay returns SUCCESS', () => pm.expect(pm.response.json().status).to.eql('SUCCESS'));",
+              "console.log('Now check balances: only ONE 10 should have moved for 4a+4b');"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-IBM-Client-Id",
+            "value": "{{clientId}}"
+          },
+          {
+            "key": "X-IBM-Client-Secret",
+            "value": "{{clientSecret}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccount\": \"ACC1001\",\n  \"destinationAccount\": \"ACC1002\",\n  \"amount\": 10,\n  \"transferId\": \"{{retryId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{gatewayUrl}}/transfer"
+      }
+    },
+    {
+      "name": "5 No Client ID (expect 401)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 401', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccount\": \"ACC1001\",\n  \"destinationAccount\": \"ACC1002\",\n  \"amount\": 99999999\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{gatewayUrl}}/transfer"
+      }
+    },
+    {
+      "name": "6 Rate limit burst (run this request 10 times in Collection Runner)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 until the limit, then 429', () => pm.expect([200, 429]).to.include(pm.response.code));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-IBM-Client-Id",
+            "value": "{{clientId}}"
+          },
+          {
+            "key": "X-IBM-Client-Secret",
+            "value": "{{clientSecret}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccount\": \"ACC1001\",\n  \"destinationAccount\": \"ACC1002\",\n  \"amount\": 99999999\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{gatewayUrl}}/transfer"
+      }
+    }
+  ]
+}

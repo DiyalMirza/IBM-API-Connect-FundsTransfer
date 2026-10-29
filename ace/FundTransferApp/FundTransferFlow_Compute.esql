@@ -1,0 +1,293 @@
+
+CREATE COMPUTE MODULE PrepareDebit
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    
+    SET OutputRoot.HTTPRequestHeader."Content-Type" =
+      'application/json';
+    
+    -- Save transfer details for later steps
+    SET Environment.Variables.SourceAccount =
+      InputRoot.JSON.Data.sourceAccount;
+
+    SET Environment.Variables.DestinationAccount =
+      InputRoot.JSON.Data.destinationAccount;
+
+    SET Environment.Variables.TransferAmount =
+      InputRoot.JSON.Data.amount;
+
+    -- Prepare the debit API request
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.amount =
+      InputRoot.JSON.Data.amount;
+
+
+
+    SET OutputLocalEnvironment.Destination.HTTP.RequestURL =
+      'http://localhost:3000/accounts/'
+      || CAST(InputRoot.JSON.Data.sourceAccount AS CHARACTER)
+      || '/debit';
+
+    SET OutputLocalEnvironment.Destination.HTTP.RequestLine.Method =
+      'POST';
+
+    RETURN TRUE;
+  END;
+END MODULE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE PrepareCredit
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    
+     SET OutputRoot.HTTPRequestHeader."Content-Type" =
+      'application/json';
+    
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.amount =
+      Environment.Variables.TransferAmount;
+
+   
+
+    SET OutputLocalEnvironment.Destination.HTTP.RequestURL =
+      'http://localhost:3000/accounts/'
+      || CAST(Environment.Variables.DestinationAccount AS CHARACTER)
+      || '/credit';
+
+    SET OutputLocalEnvironment.Destination.HTTP.RequestLine.Method =
+      'POST';
+
+    RETURN TRUE;
+  END;
+END MODULE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE PrepareRefund
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    
+    SET OutputRoot.HTTPRequestHeader."Content-Type" =
+      'application/json';
+    
+    
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.amount =
+      Environment.Variables.TransferAmount;
+
+   
+
+    SET OutputLocalEnvironment.Destination.HTTP.RequestURL =
+      'http://localhost:3000/accounts/'
+      || CAST(Environment.Variables.SourceAccount AS CHARACTER)
+      || '/credit';
+
+    SET OutputLocalEnvironment.Destination.HTTP.RequestLine.Method =
+      'POST';
+
+    RETURN TRUE;
+  END;
+END MODULE;
+
+
+
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE TransferSuccess
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.status = 'SUCCESS';
+    SET OutputRoot.JSON.Data.message = 'Transfer completed';
+    SET OutputRoot.JSON.Data.amount =
+      Environment.Variables.TransferAmount;
+
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 200;
+    RETURN TRUE;
+  END;
+END MODULE;
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE DebitFailed
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.status = 'DEBIT_FAILED';
+    SET OutputRoot.JSON.Data.message =
+      'Debit was rejected; transfer not continued';
+
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 409;
+    RETURN TRUE;
+  END;
+END MODULE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE DebitUncertain
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.status = 'DEBIT_UNCERTAIN';
+    SET OutputRoot.JSON.Data.message =
+      'Check source account balance before retrying';
+
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 500;
+    RETURN TRUE;
+  END;
+END MODULE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE TransferRefunded
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.status = 'FAILED_REFUNDED';
+    SET OutputRoot.JSON.Data.message =
+      'Credit failed; source account refund completed';
+
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 502;
+    RETURN TRUE;
+  END;
+END MODULE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE CreditUncertain
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.status = 'CREDIT_UNCERTAIN';
+    SET OutputRoot.JSON.Data.message =
+      'Verify destination balance before refund or retry';
+
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 500;
+    RETURN TRUE;
+  END;
+END MODULE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE COMPUTE MODULE CompensationFailed
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    SET OutputLocalEnvironment = InputLocalEnvironment;
+    SET OutputRoot = NULL;
+    CREATE LASTCHILD OF OutputRoot DOMAIN('JSON');
+
+    SET OutputRoot.JSON.Data.status = 'COMPENSATION_FAILED';
+    SET OutputRoot.JSON.Data.message =
+      'Refund failed; manual reconciliation required';
+
+    SET OutputLocalEnvironment.Destination.HTTP.ReplyStatusCode = 500;
+    RETURN TRUE;
+  END;
+END MODULE;
+

@@ -1,0 +1,19 @@
+kind: API
+apiVersion: api.ibm.com/v1
+metadata:
+  name: funds-transfer-api
+  version: 1.0.0
+  namespace: Funds-Transfer
+  tags: []
+  type: REST
+spec:
+  api-spec:
+    $path: ./funds-transfer-api-spec.yml
+  policy-sequence:
+    - $ref: Funds-Transfer:call-ace:1.0
+  extensions:
+    dp-nano-gateway:
+      apiVersion: api.ibm.com/v1
+      spec:
+        api-set:
+          name: funds-transfer-api

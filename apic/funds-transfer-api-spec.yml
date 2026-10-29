@@ -1,0 +1,57 @@
+openapi: 3.0.4
+info:
+  title: funds-transfer-api
+  version: 1.0.0
+  description: Funds API
+paths:
+  /transfer:
+    summary: Transfer money between two accounts
+    description: ''
+    post:
+      responses:
+        '200':
+          description: Transfer completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  amount:
+                    type: number
+      requestBody:
+        required: false
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sourceAccount
+                - destinationAccount
+                - amount
+              properties:
+                sourceAccount:
+                  type: string
+                destinationAccount:
+                  type: string
+                amount:
+                  type: number
+            example:
+              sourceAccount: ACC1001
+              destinationAccount: ACC1002
+              amount: 10
+servers:
+  - url: /funds-transfer-api
+components:
+  securitySchemes:
+    clientID:
+      name: X-IBM-Client-Id
+      in: header
+      description: ''
+      type: apiKey
+security:
+  - clientID: []

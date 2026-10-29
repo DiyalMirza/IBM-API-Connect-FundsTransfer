@@ -1,0 +1,18 @@
+kind: RateLimit
+apiVersion: api.ibm.com/v1
+metadata:
+  name: RateLimit-E1fj4
+  namespace: Funds-Transfer
+  version: '1.0'
+  tags: []
+  labels:
+    gatewayTypes:
+      - nano
+spec:
+  limits:
+    - limitDef:
+        name: transfer-limit
+        definition:
+          $ref: Funds-Transfer:transfer-limit:1.0.0
+        operation: consume
+  target: all
