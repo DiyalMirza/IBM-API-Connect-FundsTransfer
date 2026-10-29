@@ -107,7 +107,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 ### Consumer Catalog
 <img src="docs/screenshots/Analytics/Consumer Catalog.png" alt="Consumer Catalog product page" width="800">
 <img src="docs/screenshots/Analytics/Consumer Catalog1.png" alt="Consumer Catalog product page" width="800">
-<img src="docs/screenshots/Analytics/Consumer Catalog.2png" alt="Consumer Catalog product page" width="800">
+<img src="docs/screenshots/Analytics/Consumer Catalog2.png" alt="Consumer Catalog product page" width="800">
 
 *The developer's view of the product.*
 
