@@ -116,7 +116,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 
 *A wrong secret is rejected with 401.*
 
-<img src="docs/screenshots/08-postman-valid-debit-failed.png" alt="Valid credentials, rejected debit" width="800">
+<img src="docs/screenshots/Postman Debit Failed.png" alt="Valid credentials, rejected debit" width="800">
 
 *Valid credentials reach ACE; an oversized amount returns `DEBIT_FAILED` and no money moves.*
 
