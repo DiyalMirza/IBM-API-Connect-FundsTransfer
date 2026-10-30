@@ -134,7 +134,10 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 
 *Gateway events: 200, 401 and 429 responses.*
 
-<img src="docs/screenshots/11-analytics-final.png" alt="Analytics after final tests" width="800">
+<img src="docs/screenshots/Analytics/Call Volume1.png" alt="Analytics after final tests" width="800">
+<img src="docs/screenshots/Analytics/Call Volume2.png" alt="Analytics after final tests" width="800">
+<img src="docs/screenshots/Analytics/Call Volume3.png" alt="Analytics after final tests" width="800">
+<img src="docs/screenshots/Analytics/Call Volume4.png" alt="Analytics after final tests" width="800">
 
 ## Tests performed
 
