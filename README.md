@@ -85,7 +85,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 ## Screenshots
 
 ### Published API
-<img src="docs/screenshots/01-published-api.png" alt="Published API in the Sandbox catalog" width="800">
+<img src="docs/screenshots/Publish assets.png" alt="Published API in the Sandbox catalog" width="800">
 
 *The API in the Sandbox catalog with state `online-success`.*
 
