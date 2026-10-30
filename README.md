@@ -138,6 +138,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 <img src="docs/screenshots/Analytics/Call Volume2.png" alt="Analytics after final tests" width="800">
 <img src="docs/screenshots/Analytics/Call Volume3.png" alt="Analytics after final tests" width="800">
 <img src="docs/screenshots/Analytics/Call Volume4.png" alt="Analytics after final tests" width="800">
+<img src="docs/screenshots/Analytics/Call Volume5.png" alt="Analytics after final tests" width="800">
 
 ## Tests performed
 
