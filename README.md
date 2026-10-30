@@ -130,7 +130,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 *A transfer to an unknown account returns `FAILED_REFUNDED`; the source balance is unchanged.*
 
 ### Analytics
-<img src="docs/screenshots/05-analytics.png" alt="Analytics Discover page" width="800">
+<img src="docs/screenshots/Analytics/Discover.png" alt="Analytics Discover page" width="800">
 
 *Gateway events: 200, 401 and 429 responses.*
 
