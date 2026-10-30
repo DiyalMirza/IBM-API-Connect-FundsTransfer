@@ -121,7 +121,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 *Valid credentials reach ACE; an oversized amount returns `DEBIT_FAILED` and no money moves.*
 
 ### Transfer tests (Postman)
-<img src="docs/screenshots/09-postman-success.png" alt="Successful transfer" width="800">
+<img src="docs/screenshots/Success.png" alt="Successful transfer" width="800">
 
 *A real transfer returns `SUCCESS`.*
 
