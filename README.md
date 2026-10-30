@@ -125,7 +125,7 @@ The gateway files are in [`apic/`](apic). The Invoke URL there is a placeholder.
 
 *A real transfer returns `SUCCESS`.*
 
-<img src="docs/screenshots/10-postman-refund.png" alt="Failed credit refunded" width="800">
+<img src="docs/screenshots/Wrong Account.png" alt="Failed credit refunded" width="800">
 
 *A transfer to an unknown account returns `FAILED_REFUNDED`; the source balance is unchanged.*
 
