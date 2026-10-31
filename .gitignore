@@ -10,3 +10,5 @@ backend-node/curl.exe
 backend-node/$1
 backend-node/type
 backend-node/{
+docs/finish-checklist.md
+docs/cv-and-linkedin.md
